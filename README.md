@@ -11,10 +11,24 @@ forecast dashboard. Research groundwork lives in
 
 - [x] **Phase 1 — Data layer:** cached UCI Online Retail download, invoice-level
   cleaning, daily revenue aggregation (tested)
-- [ ] **Phase 2 — Models:** moving-average baseline → regression → Prophet/XGBoost,
-  with honest evaluation
+- [ ] **Phase 2 — Models:** baselines + evaluation harness done; next
+  regression → Prophet/XGBoost, judged against the same harness
 - [ ] **Phase 3 — Dashboard:** forecasts per product/category in a web UI
 - [ ] **Phase 4 — Ship it:** CI (done early), Docker, live deployment
+
+## Baseline results
+
+Daily revenue, last 28 days held out (`python -m forecaster`):
+
+| Model | MAE (GBP) | RMSE (GBP) |
+|-------|----------:|-----------:|
+| naive last-value | 25,657 | 39,416 |
+| moving average (7d) | 25,737 | 39,453 |
+| **seasonal naive (7d)** | **15,185** | **30,915** |
+
+The weekly cycle carries most of the signal — copying last week beats
+smoothing it away. Seasonal-naive is now the bar any trained model must
+clear to justify its complexity.
 
 ## Setup
 
