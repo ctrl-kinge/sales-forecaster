@@ -7,6 +7,7 @@ import sys
 from forecaster.baselines import moving_average, naive_last, seasonal_naive
 from forecaster.data import load_raw
 from forecaster.metrics import score_forecasts
+from forecaster.models import regression_forecast
 from forecaster.prep import clean_sales, daily_revenue
 from forecaster.split import split_train_test
 
@@ -20,6 +21,7 @@ def main(test_days: int = 28) -> None:
         "naive_last": naive_last(train, horizon),
         "moving_average_7d": moving_average(train, horizon, window=7),
         "seasonal_naive_7d": seasonal_naive(train, horizon, season=7),
+        "regression_calendar": regression_forecast(train, horizon),
     }
     # score against the same index as the test set
     forecasts = {name: fc.set_axis(test.index) for name, fc in forecasts.items()}
