@@ -26,6 +26,7 @@ Daily revenue, last 28 days held out (`python -m forecaster`):
 | moving average (7d) | 25,737 | 39,453 |
 | **seasonal naive (7d)** | **15,185** | **30,915** |
 | regression (calendar features) | 39,071 | 63,060 |
+| regression (dow + lag-28/35) | 23,609 | 38,897 |
 
 The weekly cycle carries most of the signal — copying last week beats
 smoothing it away. Seasonal-naive is the bar any trained model must
@@ -37,8 +38,14 @@ ramp and force the trend coefficient negative (−149/day), which then
 extrapolates badly past the train window. Even the best calendar-only
 variant (day-of-week + month, no trend: MAE 22,297) loses, because
 calendar features can't see the series' *current level* — seasonal-naive
-gets that for free by copying last week. Next: lag features (Phase 2c),
-which give a trained model exactly that information.
+gets that for free by copying last week.
+
+Lag features (Phase 2c) close most of that gap (39,071 → 23,609) but
+still lose: forecasting 28 days out with no recursion means every lag is
+≥ 28 days stale, while seasonal-naive's copy of last week is only 7 days
+old. During a steep holiday ramp, freshness wins. Next (Phase 2d):
+rolling-origin backtesting at a 7-day horizon — the operationally
+realistic setup, and a fair fight.
 
 ## Setup
 
