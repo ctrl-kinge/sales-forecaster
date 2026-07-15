@@ -16,7 +16,7 @@ forecast dashboard. Research groundwork lives in
 - [ ] **Phase 3 — Dashboard:** forecasts per product/category in a web UI
 - [ ] **Phase 4 — Ship it:** CI (done early), Docker, live deployment
 
-## Baseline results
+## Results
 
 Daily revenue, last 28 days held out (`python -m forecaster`):
 
@@ -25,10 +25,20 @@ Daily revenue, last 28 days held out (`python -m forecaster`):
 | naive last-value | 25,657 | 39,416 |
 | moving average (7d) | 25,737 | 39,453 |
 | **seasonal naive (7d)** | **15,185** | **30,915** |
+| regression (calendar features) | 39,071 | 63,060 |
 
 The weekly cycle carries most of the signal — copying last week beats
-smoothing it away. Seasonal-naive is now the bar any trained model must
+smoothing it away. Seasonal-naive is the bar any trained model must
 clear to justify its complexity.
+
+**And the first trained model failed to clear it.** Feature ablation
+shows why: with one year of data, the month dummies absorb the holiday
+ramp and force the trend coefficient negative (−149/day), which then
+extrapolates badly past the train window. Even the best calendar-only
+variant (day-of-week + month, no trend: MAE 22,297) loses, because
+calendar features can't see the series' *current level* — seasonal-naive
+gets that for free by copying last week. Next: lag features (Phase 2c),
+which give a trained model exactly that information.
 
 ## Setup
 
