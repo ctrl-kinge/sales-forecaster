@@ -5,20 +5,53 @@
 Supermarket sales forecasting — from raw retail transactions to a deployed
 forecast dashboard. Research groundwork lives in
 [data-science-notebooks](https://github.com/ctrl-kinge/data-science-notebooks)
-(notebook 01: Online Retail EDA).
+(notebook 01: Online Retail EDA · notebook 02: seasonality deep-dive,
+which designed the rolling-origin protocol used below).
 
 ## Roadmap
 
 - [x] **Phase 1 — Data layer:** cached UCI Online Retail download, invoice-level
   cleaning, daily revenue aggregation (tested)
-- [ ] **Phase 2 — Models:** baselines + evaluation harness done; next
-  regression → Prophet/XGBoost, judged against the same harness
+- [x] **Phase 2 — Models:** evaluation harness (single holdout +
+  rolling-origin backtest), baselines, calendar/lag regressions —
+  seasonal-naive survives as champion (see Results)
 - [ ] **Phase 3 — Dashboard:** forecasts per product/category in a web UI
 - [ ] **Phase 4 — Ship it:** CI (done early), Docker, live deployment
 
 ## Results
 
-Daily revenue, last 28 days held out (`python -m forecaster`):
+### Rolling-origin backtest — 8 folds × 7-day horizon (the headline)
+
+The operationally realistic protocol (`python -m forecaster`): re-fit
+weekly, forecast one week out, average scores over 8 consecutive weekly
+folds so no single odd window decides the leaderboard. At a 7-day
+horizon, lag-7 is a legal feature — the fair fight the single-holdout
+setup never allowed.
+
+| Model | MAE (GBP) | RMSE (GBP) |
+|-------|----------:|-----------:|
+| **seasonal naive (7d)** | **13,513** | **20,175** |
+| regression (dow + lag-7/14/28) | 15,566 | 22,204 |
+| regression (calendar features) | 20,229 | 28,010 |
+| naive last-value | 23,240 | 30,779 |
+| moving average (7d) | 23,467 | 30,102 |
+
+**Seasonal-naive survives Phase 2.** Even with lag-7 legal, the lag
+regression loses — and the fitted coefficients explain why: OLS puts
+only ~0.45 on lag-7 (least-squares shrinks noisy predictors toward the
+mean), so the model systematically under-reacts to last week's level
+during the Nov–Dec ramp. Seasonal-naive implicitly bets a coefficient
+of exactly 1.0 per weekday, and on this series that bold bet is right.
+Adding more history helps (lag-7 alone: 18,213; lag-7/14/28: 15,566)
+but a linear model can't shrink less without overfitting elsewhere.
+
+Verdict after five models: on one year of strongly weekly-cyclic data
+with a structural holiday ramp, *copy last week* is genuinely hard to
+beat with linear methods. Beating it likely needs models that handle
+trend and seasonality jointly (Prophet-style decomposition or gradient
+boosting) — exactly what the dashboard phase will visualize.
+
+### Single 28-day holdout (legacy protocol, Phases 2a–2c)
 
 | Model | MAE (GBP) | RMSE (GBP) |
 |-------|----------:|-----------:|
@@ -28,24 +61,12 @@ Daily revenue, last 28 days held out (`python -m forecaster`):
 | regression (calendar features) | 39,071 | 63,060 |
 | regression (dow + lag-28/35) | 23,609 | 38,897 |
 
-The weekly cycle carries most of the signal — copying last week beats
-smoothing it away. Seasonal-naive is the bar any trained model must
-clear to justify its complexity.
-
-**And the first trained model failed to clear it.** Feature ablation
-shows why: with one year of data, the month dummies absorb the holiday
-ramp and force the trend coefficient negative (−149/day), which then
-extrapolates badly past the train window. Even the best calendar-only
-variant (day-of-week + month, no trend: MAE 22,297) loses, because
-calendar features can't see the series' *current level* — seasonal-naive
-gets that for free by copying last week.
-
-Lag features (Phase 2c) close most of that gap (39,071 → 23,609) but
-still lose: forecasting 28 days out with no recursion means every lag is
-≥ 28 days stale, while seasonal-naive's copy of last week is only 7 days
-old. During a steep holiday ramp, freshness wins. Next (Phase 2d):
-rolling-origin backtesting at a 7-day horizon — the operationally
-realistic setup, and a fair fight.
+Findings preserved from earlier phases: calendar features alone lose
+badly because month dummies absorb the holiday ramp and force the trend
+coefficient negative (−149/day), and they can't see the series' current
+level at all. Horizon-safe lags (≥ 28 days at this horizon) closed most
+of that gap but were too stale to win — the freshness problem that
+motivated the rolling-origin protocol above.
 
 ## Setup
 
