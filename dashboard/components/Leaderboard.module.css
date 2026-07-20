@@ -1,0 +1,68 @@
+.section {
+  padding: 3.5rem 0;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0.5rem 0 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--sand-deep);
+  border-top: 3px solid var(--sand-deep);
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.rank {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.champion {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--green);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.model {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.4rem 0 0.6rem;
+}
+
+.mae {
+  font-size: 2.1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.rmse {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin: 0.35rem 0 0.75rem;
+}
+
+.blurb {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
