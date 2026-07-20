@@ -1,11 +1,14 @@
+import ForecastChart from "@/components/ForecastChart";
 import Hero from "@/components/Hero";
 import Leaderboard from "@/components/Leaderboard";
+import { folds } from "@/lib/data";
 
 export default function Home() {
   return (
     <main>
       <Hero />
       <Leaderboard />
+      <ForecastChart folds={folds} />
       <footer
         className="container"
         style={{
@@ -18,7 +21,7 @@ export default function Home() {
         <a href="https://github.com/ctrl-kinge/sales-forecaster">
           sales-forecaster
         </a>{" "}
-        backtest · charts and fold explorer coming in Phase 3b/3c.
+        backtest · per-fold explorer coming in Phase 3c.
       </footer>
     </main>
   );
