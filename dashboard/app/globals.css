@@ -1,0 +1,56 @@
+/* Lab-notebook identity (Phase 3 spec): paper, ink, earth accents.
+   Shared design language with the KhetiaIS shop identity. */
+
+:root {
+  --paper: #faf6ef;
+  --ink: #1c1a17;
+  --ink-soft: #6b5f4e;
+  --sand: #e8e0d2;
+  --sand-deep: #d8cfbc;
+  --green: #3d6b35;
+  --wheat: #8a6414;
+  --clay: #a8432e;
+  --card: #fffdf8;
+
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+.numeral {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+a {
+  color: var(--green);
+  text-underline-offset: 2px;
+}
+
+.label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}

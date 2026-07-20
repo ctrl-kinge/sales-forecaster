@@ -4,3 +4,7 @@ __pycache__/
 .ipynb_checkpoints/
 data/*
 !data/.gitkeep
+
+# visual-companion brainstorm sessions
+.superpowers/
+node_modules/
