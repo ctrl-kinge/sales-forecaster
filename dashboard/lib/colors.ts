@@ -9,4 +9,7 @@ export const MODEL_COLORS: Record<ModelKey, string> = {
   moving_average_7d: "#54718a", // slate
 };
 
+// Draw/toggle order for models: champion first, then descending accuracy.
+export const MODEL_KEYS = Object.keys(MODEL_COLORS) as ModelKey[];
+
 export const ACTUAL_COLOR = "#1c1a17"; // ink
