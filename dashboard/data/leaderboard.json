@@ -1,0 +1,42 @@
+[
+  {
+    "model": "seasonal_naive_7d",
+    "label": "Seasonal naive (7d)",
+    "blurb": "Copies last week day-for-day \u2014 an implicit lag-7 coefficient of exactly 1.0, which this series rewards.",
+    "mae": 13513.48,
+    "rmse": 20174.57,
+    "champion": true
+  },
+  {
+    "model": "regression_lags_7_14_28",
+    "label": "Lag regression (7/14/28)",
+    "blurb": "Sees recent levels, but least squares shrinks the lag weights and under-reacts to the holiday ramp.",
+    "mae": 15565.62,
+    "rmse": 22204.1,
+    "champion": false
+  },
+  {
+    "model": "regression_calendar",
+    "label": "Calendar regression",
+    "blurb": "Knows weekdays and months, but can't see the series' current level at all.",
+    "mae": 20229.03,
+    "rmse": 28010.22,
+    "champion": false
+  },
+  {
+    "model": "naive_last",
+    "label": "Naive last-value",
+    "blurb": "Repeats yesterday forever \u2014 flat lines through a weekly cycle.",
+    "mae": 23239.83,
+    "rmse": 30778.81,
+    "champion": false
+  },
+  {
+    "model": "moving_average_7d",
+    "label": "Moving average (7d)",
+    "blurb": "Smooths the weekly cycle away instead of exploiting it.",
+    "mae": 23467.17,
+    "rmse": 30101.79,
+    "champion": false
+  }
+]

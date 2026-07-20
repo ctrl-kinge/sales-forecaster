@@ -1,0 +1,9 @@
+{
+  "dataset": "UCI Online Retail \u2014 daily revenue (GBP)",
+  "protocol": "Rolling-origin backtest: 8 folds x 7-day horizon, origin advancing weekly, models re-fit per fold.",
+  "horizon": 7,
+  "n_folds": 8,
+  "train_start": "2010-12-01",
+  "train_end": "2011-12-09",
+  "generated_at": "2026-07-20T11:49:17+00:00"
+}
