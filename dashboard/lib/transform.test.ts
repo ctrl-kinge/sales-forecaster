@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MODEL_KEYS } from "./colors";
-import { foldsToSeries } from "./transform";
+import { foldScoreRows, foldsToSeries } from "./transform";
 import type { Fold } from "./types";
 
 function makeFold(fold: number, dates: string[]): Fold {
@@ -63,5 +63,34 @@ describe("foldsToSeries", () => {
     const broken = structuredClone(twoFolds);
     broken[0].forecasts.seasonal_naive_7d[0].date = "2099-01-01";
     expect(() => foldsToSeries(broken)).toThrow();
+  });
+});
+
+describe("foldScoreRows", () => {
+  const fold: Fold = {
+    ...twoFolds[0],
+    scores: {
+      seasonal_naive_7d: { mae: 300, rmse: 400 },
+      regression_lags_7_14_28: { mae: 100, rmse: 150 },
+      regression_calendar: { mae: 500, rmse: 600 },
+      naive_last: { mae: 200, rmse: 250 },
+      moving_average_7d: { mae: 400, rmse: 500 },
+    },
+  };
+
+  it("returns one row per model", () => {
+    expect(foldScoreRows(fold)).toHaveLength(MODEL_KEYS.length);
+  });
+
+  it("sorts by MAE ascending", () => {
+    const maes = foldScoreRows(fold).map((r) => r.mae);
+    expect(maes).toEqual([100, 200, 300, 400, 500]);
+  });
+
+  it("flags exactly one winner — the lowest MAE — as the first row", () => {
+    const rows = foldScoreRows(fold);
+    expect(rows.filter((r) => r.winner)).toHaveLength(1);
+    expect(rows[0].winner).toBe(true);
+    expect(rows[0].model).toBe("regression_lags_7_14_28");
   });
 });

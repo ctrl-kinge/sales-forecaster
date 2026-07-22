@@ -1,3 +1,4 @@
+import FoldExplorer from "@/components/FoldExplorer";
 import ForecastChart from "@/components/ForecastChart";
 import Hero from "@/components/Hero";
 import Leaderboard from "@/components/Leaderboard";
@@ -9,6 +10,7 @@ export default function Home() {
       <Hero />
       <Leaderboard />
       <ForecastChart folds={folds} />
+      <FoldExplorer folds={folds} />
       <footer
         className="container"
         style={{
@@ -21,7 +23,8 @@ export default function Home() {
         <a href="https://github.com/ctrl-kinge/sales-forecaster">
           sales-forecaster
         </a>{" "}
-        backtest · per-fold explorer coming in Phase 3c.
+        backtest · every number regenerated with{" "}
+        <code>python -m forecaster.export</code>.
       </footer>
     </main>
   );
