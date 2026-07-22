@@ -42,3 +42,25 @@ export function foldsToSeries(folds: Fold[]): ChartRow[] {
 
   return rows.sort((a, b) => a.date.localeCompare(b.date));
 }
+
+export interface FoldScoreRow {
+  model: ModelKey;
+  mae: number;
+  rmse: number;
+  winner: boolean;
+}
+
+/** One fold's per-model scores, sorted best-first with the winner flagged. */
+export function foldScoreRows(fold: Fold): FoldScoreRow[] {
+  const rows: FoldScoreRow[] = MODEL_KEYS.map((model) => ({
+    model,
+    mae: fold.scores[model].mae,
+    rmse: fold.scores[model].rmse,
+    winner: false,
+  }));
+  rows.sort((a, b) => a.mae - b.mae);
+  if (rows.length > 0) {
+    rows[0].winner = true;
+  }
+  return rows;
+}

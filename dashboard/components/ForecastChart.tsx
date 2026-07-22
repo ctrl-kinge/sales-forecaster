@@ -11,14 +11,10 @@ import {
   YAxis,
 } from "recharts";
 import { ACTUAL_COLOR, MODEL_COLORS, MODEL_KEYS } from "@/lib/colors";
-import { gbp, leaderboard } from "@/lib/data";
+import { gbp, MODEL_LABELS } from "@/lib/data";
 import { foldsToSeries } from "@/lib/transform";
 import type { Fold, ModelKey } from "@/lib/types";
 import styles from "./ForecastChart.module.css";
-
-const LABELS: Record<ModelKey, string> = Object.fromEntries(
-  leaderboard.map((r) => [r.model, r.label]),
-) as Record<ModelKey, string>;
 
 // Off by default so the champion vs. actual comparison reads first; the
 // visitor opts models in.
@@ -73,7 +69,7 @@ export default function ForecastChart({ folds }: { folds: Fold[] }) {
                 className={styles.swatch}
                 style={{ background: MODEL_COLORS[key] }}
               />
-              {LABELS[key]}
+              {MODEL_LABELS[key]}
             </button>
           ))}
         </div>
@@ -99,7 +95,7 @@ export default function ForecastChart({ folds }: { folds: Fold[] }) {
               <Tooltip
                 formatter={(value, name) => [
                   gbp(Number(value)),
-                  name === "actual" ? "Actual" : LABELS[name as ModelKey],
+                  name === "actual" ? "Actual" : MODEL_LABELS[name as ModelKey],
                 ]}
                 labelFormatter={(iso) => shortDate(iso as string)}
                 contentStyle={{
