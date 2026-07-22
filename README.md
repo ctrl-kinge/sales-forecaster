@@ -15,7 +15,9 @@ which designed the rolling-origin protocol used below).
 - [x] **Phase 2 — Models:** evaluation harness (single holdout +
   rolling-origin backtest), baselines, calendar/lag regressions —
   seasonal-naive survives as champion (see Results)
-- [ ] **Phase 3 — Dashboard:** forecasts per product/category in a web UI
+- [x] **Phase 3 — Dashboard:** Next.js/TypeScript scroll-story of the
+  backtest — leaderboard, forecast-vs-actual chart, per-fold explorer
+  (see Dashboard)
 - [ ] **Phase 4 — Ship it:** CI (done early), Docker, live deployment
 
 ## Results
@@ -67,6 +69,29 @@ coefficient negative (−149/day), and they can't see the series' current
 level at all. Horizon-safe lags (≥ 28 days at this horizon) closed most
 of that gap but were too stale to win — the freshness problem that
 motivated the rolling-origin protocol above.
+
+## Dashboard
+
+A Next.js/TypeScript reading of the backtest, in `dashboard/`. It tells
+the Phase 2 story as a single scroll: the leaderboard verdict, the
+56-day forecast-vs-actual chart, and a per-fold explorer where you pick
+a week and see who won it.
+
+![Dashboard](docs/dashboard.png)
+
+Data is a static export from the Python package — no API, no server:
+
+```powershell
+python -m forecaster.export          # regenerates dashboard/data/*.json
+cd dashboard
+npm install
+npm run dev                          # http://localhost:3000
+npm run test                         # vitest on the chart transforms
+```
+
+The JSON contract in `dashboard/lib/types.ts` mirrors
+`forecaster/export.py`; charts are Recharts, styled in the same warm
+"lab-notebook" palette as the analysis. Live deployment is Phase 4.
 
 ## Setup
 
