@@ -44,3 +44,31 @@ jobs:
 
       - name: Build (includes type check)
         run: npm run build
+
+  dashboard-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t forecaster-dashboard ./dashboard
+
+      - name: Run container
+        run: docker run -d --name dash -p 3000:3000 forecaster-dashboard
+
+      - name: Smoke test (poll for HTTP 200)
+        run: |
+          for i in $(seq 1 20); do
+            if curl -sf http://localhost:3000 > /dev/null; then
+              echo "dashboard responded on attempt $i"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "dashboard never returned 200"
+          docker logs dash
+          exit 1
+
+      - name: Teardown
+        if: always()
+        run: docker rm -f dash

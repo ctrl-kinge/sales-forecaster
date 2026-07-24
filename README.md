@@ -91,7 +91,18 @@ npm run test                         # vitest on the chart transforms
 
 The JSON contract in `dashboard/lib/types.ts` mirrors
 `forecaster/export.py`; charts are Recharts, styled in the same warm
-"lab-notebook" palette as the analysis. Live deployment is Phase 4.
+"lab-notebook" palette as the analysis.
+
+Or run the whole thing as a container (multi-stage build → standalone
+Next server, non-root, ~150 MB):
+
+```bash
+docker build -t forecaster-dashboard ./dashboard
+docker run -p 3000:3000 forecaster-dashboard   # http://localhost:3000
+```
+
+CI builds this image and smoke-tests it on every push. Live public
+deployment is the remaining Phase 4 step.
 
 ## Setup
 
